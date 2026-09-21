@@ -15,14 +15,28 @@ class DepthFirstSearch:
         Returns:
             Solution: Solution found
         """
-        # Initialize root node
+
         root = Node("", state=grid.initial, cost=0, parent=None, action=None)
+        expanded = {}
+        expanded[root.state] = True
 
-        # Initialize expanded with the empty dictionary
-        expanded = dict()
+        nodo = root
 
-        # Initialize frontier with the root node
-        # TODO Complete the rest!!
-        # ...
+        if grid.objective_test(nodo.state):
+            return Solution(nodo, expanded)
+        frontera = StackFrontier()
+        frontera.add(nodo)
 
+        while True:
+            if frontera.is_empty():
+                return NoSolution(expanded)
+            nodo1 = frontera.remove()
+            for a in grid.actions(nodo1.state):
+                resultado = grid.result(nodo1.state, a)
+                if resultado not in expanded:
+                    hijo = Node("", resultado, nodo1.cost + grid.individual_cost(nodo1.state, a), nodo1, a)
+                    expanded[resultado] = True
+                    if grid.objective_test(resultado):
+                        return Solution(hijo, expanded)
+                    frontera.add(hijo)
         return NoSolution(expanded)

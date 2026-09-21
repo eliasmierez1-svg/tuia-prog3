@@ -15,15 +15,29 @@ class BreadthFirstSearch:
         Returns:
             Solution: Solution found
         """
-        # Initialize root node
-        root = Node("", state=grid.initial, cost=0, parent=None, action=None)
 
-        # Initialize reached with the initial state
+        root = Node("", state=grid.initial, cost=0, parent=None, action=None)
         reached = {}
         reached[root.state] = True
 
-        # Initialize frontier with the root node
-        # TODO Complete the rest!!
-        # ...
+        nodo = root
 
+        if grid.objective_test(nodo.state):
+            return Solution(nodo, reached)
+        frontera = QueueFrontier()
+        frontera.add(nodo)
+
+        while True:
+            if frontera.is_empty():
+                return NoSolution(reached)
+            nodo1 = frontera.remove()
+            for a in grid.actions(nodo1.state):
+                resultado = grid.result(nodo1.state, a)
+                if resultado in reached:
+                    continue
+                hijo = Node("", resultado, nodo1.cost + grid.individual_cost(nodo1.state, a), nodo1, a)
+                reached[resultado] = True
+                if grid.objective_test(resultado):
+                    return Solution(hijo, reached)
+                frontera.add(hijo)
         return NoSolution(reached)
