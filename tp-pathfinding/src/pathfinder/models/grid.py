@@ -109,5 +109,16 @@ class Grid:
         new_pos = self.result(pos, action)
         return self.grid[new_pos[0]][new_pos[1]].cost
 
+    def heuristica(self, nodo: Node) -> float:
+        # Calculate Manhattan distance
+        distancia1 = (nodo.state[0] - self.end[0])
+        distancia2 = (nodo.state[1] - self.end[1])
+        if distancia1 < 0:
+            distancia1 = distancia1 * -1
+        if distancia2 < 0:
+            distancia2 = distancia2 * -1
+        distancia = distancia1 + distancia2
+        return distancia
+
     def __repr__(self) -> str:
         return f"Grid([[...], ...], {self.initial}, {self.end})"
