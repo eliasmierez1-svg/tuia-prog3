@@ -15,15 +15,30 @@ class AStarSearch:
         Returns:
             Solution: Solution found
         """
-        # Initialize root node
         root = Node("", state=grid.initial, cost=0, parent=None, action=None)
 
-        # Initialize reached with the initial state
         reached = {}
         reached[root.state] = root.cost
 
-        # Initialize frontier with the root node
-        # TODO Complete the rest!!
-        # ...
+        frontera = PriorityQueueFrontier()
+        frontera.add(root, priority=grid.heuristica(root) + root.cost)
+
+        while True:
+            if frontera.is_empty():
+                return NoSolution(reached)
+
+            nodo = frontera.pop()
+
+            if grid.objective_test(nodo.state):
+                return Solution(nodo, reached)
+
+            for action in grid.actions(nodo.state):
+                nuevo_estado = grid.result(nodo.state, action)
+                nuevo_costo = nodo.cost + grid.individual_cost(nodo.state, action)
+
+                if nuevo_estado not in reached or nuevo_costo < reached[nuevo_estado]:
+                    reached[nuevo_estado] = nuevo_costo
+                    nuevo_nodo = Node(action, state=nuevo_estado, cost=nuevo_costo, parent=nodo, action=action)
+                    frontera.add(nuevo_nodo, priority=grid.heuristica(nuevo_nodo) + nuevo_nodo.cost)
 
         return NoSolution(reached)
